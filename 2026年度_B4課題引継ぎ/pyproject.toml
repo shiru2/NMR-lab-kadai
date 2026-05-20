@@ -1,5 +1,5 @@
 [project]
-name = "nmrlab-b4-2026"
+name = "nmrlab-b4-2026-v2-12"
 version = "2026.1"
 description = "B4 NMR/MRI laboratory exercises — Python conversion"
 requires-python = ">=3.12"

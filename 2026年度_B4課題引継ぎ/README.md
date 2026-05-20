@@ -4,9 +4,24 @@ MATLABとPythonの両方で演習できます。どちらを使うかは自由�
 
 ## セットアップ
 
+**macOS / Linux:**
 ```bash
 # uvのインストール（未インストールの場合）
 curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 依存パッケージのインストール
+cd 2026年度_B4課題引継ぎ
+uv sync
+
+# Jupyter Lab の起動
+uv run jupyter lab
+```
+
+**Windows 10/11（PowerShell）:**
+```powershell
+# uvのインストール（未インストールの場合）
+powershell -ExecutionPolicy BypassExecutionPolicy `
+  -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 # 依存パッケージのインストール
 cd 2026年度_B4課題引継ぎ

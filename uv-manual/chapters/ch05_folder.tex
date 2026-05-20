@@ -1,0 +1,90 @@
+\chapter{フォルダ構成と配置場所}
+
+\section{配置先のディレクトリ}
+
+\cmd{git clone} を実行すると、ホームディレクトリ直下に
+リポジトリフォルダが作成されます。
+課題ファイルはその中の \cmd{NMRlab/2026年度\_B4課題引継ぎ/} にあります。
+
+\begin{wslbox}[フォルダ構成]
+\begin{lstlisting}[style=bash]
+/home/username/                      <- ホームディレクトリ（~ と同じ）
+└── NMR-lab-kadai/       <- git clone で作成される
+    └── NMRlab/
+        └── 2026年度_B4課題引継ぎ/  <- VS Code で開くフォルダ
+            ├── .vscode/
+            │   └── settings.json    <- VS Code の設定（自動でカーネル選択）
+            ├── pyproject.toml
+            ├── uv.lock
+            ├── README.md
+        ├── No.1_FID/
+        │   ├── makesignal.ipynb
+        │   ├── makesignal.py
+        │   ├── heikatsu.ipynb
+        │   └── heikatsu.py
+        ├── No.2_FFT1D/
+        │   ├── FFT1D.ipynb
+        │   ├── kukei.ipynb
+        │   └── sft.ipynb
+        ├── No.3_FFT2D/
+        │   └── FFT2D.ipynb
+        ├── No.4_DFT_exercise/
+        │   └── DFT_template.ipynb
+        ├── No.5_CompressedSensing/
+        │   ├── cs_tv.ipynb
+        │   └── cs_wavelet.ipynb
+        ├── No.6_Denoising/
+        │   ├── add_noise.ipynb
+        │   └── denoise_bm3d.ipynb
+        ├── No.7_Metrics/
+        │   ├── psnr_ssim.ipynb
+        │   └── activation_functions.ipynb
+        └── No.8_CT/
+            └── ct_pipeline.ipynb
+\end{lstlisting}
+\end{wslbox}
+
+\begin{notebox}[username について]
+\cmd{username} の部分は自分の WSL ユーザー名です。
+次のコマンドで確認できます。
+
+\begin{wslbox}[ユーザー名の確認]
+\begin{lstlisting}[style=bash]
+$ whoami
+\end{lstlisting}
+\end{wslbox}
+\end{notebox}
+
+\section{重要なファイルの説明}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lX}
+  \toprule
+  ファイル & 役割 \\
+  \midrule
+  \cmd{pyproject.toml} &
+    必要なライブラリとバージョン条件が書かれた設定ファイル。
+    \cmd{uv sync} はこれを読んでインストール内容を決める \\
+  \cmd{uv.lock} &
+    実際にインストールするバージョンを厳密に記録したファイル。
+    全員が同じ環境を再現するために使う。
+    \textbf{編集しないこと} \\
+  \cmd{.venv/} &
+    \cmd{uv sync} を実行すると自動生成される仮想環境フォルダ。
+    git には含まれないので各自が \cmd{uv sync} で作成する \\
+  \cmd{.vscode/settings.json} &
+    VS Code が自動で \cmd{.venv} の Python を選ぶための設定ファイル。
+    カーネル選択の手間を省く \\
+  \cmd{*.ipynb} &
+    JupyterLab で開く課題ノートブック \\
+  \cmd{*.py} &
+    対応する Python スクリプト（ノートブックと同じ処理） \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{notebox}[.venv/ は git 管理外]
+\cmd{.venv/} フォルダはサイズが数百 MB あり、
+\cmd{uv sync} で誰でも再生成できるため git には含まれていません。
+\cmd{git clone} 後に各自で \cmd{uv sync} を実行してください。
+\end{notebox}

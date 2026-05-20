@@ -1,0 +1,350 @@
+\chapter{研究での活用：uv init / activate / VS Code}
+
+B4課題では既存の \cmd{pyproject.toml} に対して \cmd{uv sync} するだけでしたが、
+自分の研究プログラムを書くときは\textbf{ゼロからプロジェクトを作る}必要があります。
+この章では研究用途の uv の使い方と、スクリプトを実行する3つの方法、
+VS Code との連携を説明します。
+
+% =================================================
+\section{uv init：新しいプロジェクトを作る}
+% =================================================
+
+自分で研究プログラムを書くときは \cmd{uv init} から始めます。
+
+\begin{wslbox}[新規プロジェクトの作成]
+\begin{lstlisting}[style=bash]
+$ cd ~
+$ uv init myresearch
+$ cd myresearch
+$ ls
+hello.py  pyproject.toml  .python-version  README.md
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{uv init} は以下のファイルを自動生成します。
+
+\begin{description}
+  \item[\cmd{pyproject.toml}]
+    プロジェクト設定ファイル（空の依存関係リストで生成される）
+  \item[\cmd{.python-version}]
+    使用する Python バージョンを固定するファイル
+  \item[\cmd{hello.py}]
+    サンプルスクリプト（削除して構わない）
+\end{description}
+
+\subsection{パッケージを追加する}
+
+\begin{wslbox}[必要なパッケージを追加]
+\begin{lstlisting}[style=bash]
+$ uv add numpy matplotlib scipy
+Resolved 10 packages in 0.3ms
+Installed 10 packages in 2.1s
+ + numpy==1.26.4
+ + matplotlib==3.9.4
+ + scipy==1.13.1
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{uv add} を実行すると：
+\begin{itemize}
+  \item \cmd{.venv/} が自動作成される
+  \item \cmd{pyproject.toml} の \cmd{dependencies} に追記される
+  \item \cmd{uv.lock} が自動生成・更新される
+\end{itemize}
+
+\subsection{パッケージを削除する}
+
+\begin{wslbox}[パッケージの削除]
+\begin{lstlisting}[style=bash]
+$ uv remove scipy
+\end{lstlisting}
+\end{wslbox}
+
+% =================================================
+\section{Python スクリプトを実行する 3 つの方法}
+% =================================================
+
+仮想環境内の Python でスクリプトを実行する方法は 3 つあります。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+  \toprule
+  方法 & コマンド & 特徴 \\
+  \midrule
+  \textbf{方法(1)} & \cmd{uv run python script.py} &
+    activate 不要・最も推奨 \\
+  \textbf{方法(2)} & \cmd{source .venv/bin/activate}
+    してから \cmd{python script.py} &
+    従来の venv と同じ操作 \\
+  \textbf{方法(3)} & \cmd{.venv/bin/python script.py} &
+    パスを直接指定・activate 不要 \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{方法(1) uv run（推奨）}
+
+\begin{wslbox}[方法(1)：uv run]
+\begin{lstlisting}[style=bash]
+$ uv run python script.py
+\end{lstlisting}
+\end{wslbox}
+
+\begin{itemize}
+  \item activate の必要がない
+  \item プロジェクトフォルダ（\cmd{pyproject.toml} がある場所）
+    であれば自動的に \cmd{.venv/} を使う
+  \item \cmd{uv sync} が済んでいれば問題なく動く
+  \item このマニュアルで \textbf{最も推奨する方法}
+\end{itemize}
+
+\subsection{方法(2) activate してから実行}
+
+\begin{wslbox}[方法(2)：activate + python]
+\begin{lstlisting}[style=bash]
+$ source .venv/bin/activate
+(.venv) $ python script.py
+(.venv) $ python another.py  # activate は一度だけでよい
+(.venv) $ deactivate         # 終わったら解除
+\end{lstlisting}
+\end{wslbox}
+
+\begin{itemize}
+  \item \cmd{source .venv/bin/activate} で仮想環境を「有効化」する
+  \item 有効化するとプロンプトが \cmd{(.venv) \$} に変わる
+  \item 以降は普通に \cmd{python} と打つだけで仮想環境内の Python が使われる
+  \item \cmd{deactivate} で元の状態に戻る
+  \item 従来の venv 操作に慣れている人はこちらでも問題ない
+\end{itemize}
+
+\begin{notebox}[activate のスコープはターミナル1つ]
+\cmd{source .venv/bin/activate} の効果は\textbf{そのターミナルウィンドウだけ}です。
+新しいターミナルを開いたら、再度 activate する必要があります。
+\cmd{uv run} はこの問題がないため、ターミナルをまたぐ作業では便利です。
+\end{notebox}
+
+\subsection{方法(3) .venv/bin/python を直接指定}
+
+\begin{wslbox}[方法(3)：パスを直接指定]
+\begin{lstlisting}[style=bash]
+$ .venv/bin/python script.py
+\end{lstlisting}
+\end{wslbox}
+
+\begin{itemize}
+  \item \cmd{.venv/} 内の Python 実行ファイルを直接パス指定して実行する
+  \item activate も \cmd{uv run} も不要
+  \item シェルスクリプトや Makefile から呼び出すときに使いやすい
+  \item VS Code の Python インタープリタ設定でもこのパスを指定する
+\end{itemize}
+
+\begin{wslbox}[どの Python が使われているか確認する]
+\begin{lstlisting}[style=bash]
+$ which python          # システム Python のパス
+/usr/bin/python3
+
+$ uv run which python   # 仮想環境内 Python のパス
+/home/username/myresearch/.venv/bin/python
+
+$ .venv/bin/python --version  # 直接確認
+Python 3.11.x
+\end{lstlisting}
+\end{wslbox}
+
+% =================================================
+\section{VS Code との連携}
+% =================================================
+
+VS Code でプロジェクトを開くと、右下に Python のバージョンが表示されます。
+ここで\textbf{正しい仮想環境の Python インタープリタを選ぶ}ことが重要です。
+
+\subsection{インタープリタの選択}
+
+\begin{enumerate}
+  \item VS Code でプロジェクトフォルダを開く
+    （\cmd{File} $\rightarrow$ \cmd{Open Folder}）
+  \item \key{Ctrl} + \key{Shift} + \key{P} でコマンドパレットを開く
+  \item \texttt{Python: Select Interpreter} と入力して選択
+  \item 一覧に \cmd{.venv/bin/python} が表示されたら選択する
+\end{enumerate}
+
+\begin{notebox}[.venv が一覧に出ない場合]
+プロジェクトフォルダが VS Code で開かれていないか、
+\cmd{uv sync} がまだ完了していない可能性があります。
+先に \cmd{uv sync} を実行してから VS Code を開き直してください。
+\end{notebox}
+
+\subsection{VS Code の統合ターミナルで実行する}
+
+VS Code 内のターミナル（\cmd{Ctrl} + \cmd{\`{}}）は
+インタープリタを設定済みであれば activate 状態で開きます。
+
+\begin{wslbox}[VS Code の統合ターミナルでの実行]
+\begin{lstlisting}[style=bash]
+(.venv) $ python script.py    # 仮想環境が自動で有効
+\end{lstlisting}
+\end{wslbox}
+
+\subsection{Python ファイルを「実行」ボタンで動かす}
+
+インタープリタを設定した後、.py ファイルを開いて
+右上の \key{$\triangleright$} ボタン（Run ボタン）または \key{F5} で実行できます。
+このとき仮想環境が自動的に使われます。
+
+\subsection{Jupyter Notebook を VS Code で開く}
+
+VS Code の Jupyter 拡張機能を使うと、
+ブラウザを使わずに直接 \cmd{.ipynb} ファイルを開けます。
+
+\begin{enumerate}
+  \item 拡張機能マーケットプレイスで \texttt{Jupyter} をインストール
+  \item \cmd{.ipynb} ファイルを VS Code で開く
+  \item 右上のカーネル選択で \cmd{.venv/bin/python} を選ぶ
+\end{enumerate}
+
+\begin{tipbox}[JupyterLab vs VS Code のどちらを使う？]
+\begin{tabularx}{\linewidth}{lX}
+  \toprule
+  ツール & 向いている場面 \\
+  \midrule
+  JupyterLab（ブラウザ） &
+    グラフをインタラクティブに確認したいとき、
+    ノートブック主体の作業 \\
+  VS Code &
+    .py スクリプトとノートブックを行き来したいとき、
+    コード補完・デバッグを活用したいとき \\
+  \bottomrule
+\end{tabularx}
+どちらを使っても仮想環境さえ正しく設定されていれば同じ結果が出ます。
+\end{tipbox}
+
+% =================================================
+\section{研究プロジェクトの典型的な流れ}
+% =================================================
+
+自分の研究プログラムを始めるときの典型的な手順をまとめます。
+
+\begin{wslbox}[研究プロジェクトの開始から実行まで]
+\begin{lstlisting}[style=bash]
+# 1. プロジェクトを作成
+$ uv init myresearch
+$ cd myresearch
+
+# 2. 必要なパッケージを追加
+$ uv add numpy matplotlib scipy
+
+# 3a. uv run で実行（推奨）
+$ uv run python analysis.py
+
+# 3b. activate して実行（従来スタイル）
+$ source .venv/bin/activate
+(.venv) $ python analysis.py
+(.venv) $ deactivate
+
+# 3c. パスを直接指定して実行
+$ .venv/bin/python analysis.py
+\end{lstlisting}
+\end{wslbox}
+
+\begin{notebox}[どれを使うか迷ったら]
+\begin{itemize}
+  \item 毎回コマンドで実行する $\rightarrow$ \textbf{方法(1)} \cmd{uv run}
+  \item VS Code でコーディングしながら実行する $\rightarrow$ \textbf{VS Code} + \textbf{方法(2)}（自動 activate）
+  \item シェルスクリプトや自動化に組み込む $\rightarrow$ \textbf{方法(3)} パス直接指定
+\end{itemize}
+\end{notebox}
+
+% =================================================
+\section{よく使う uv コマンド一覧}
+% =================================================
+
+\subsection{Python バージョン管理}
+
+\begin{wslbox}[Python バージョンの確認・固定]
+\begin{lstlisting}[style=bash]
+$ uv python list          # 利用可能な Python の一覧
+$ uv python list --only-installed  # インストール済みのみ
+$ uv python pin 3.11      # .python-version に 3.11 を固定
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{uv python pin} を実行すると \cmd{.python-version} ファイルに
+バージョンが書き込まれ、以降 \cmd{uv sync} や \cmd{uv run} は
+そのバージョンを優先して使います。
+共同作業するときや、Python バージョンを明示したいときに使います。
+
+\subsection{依存関係の確認}
+
+\begin{wslbox}[依存関係ツリーの表示]
+\begin{lstlisting}[style=bash]
+$ uv tree
+myresearch v0.1.0
+├── matplotlib v3.9.4
+│   ├── numpy v1.26.4
+│   └── ...
+└── scipy v1.13.1
+    └── numpy v1.26.4 (*)
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{uv tree} でどのパッケージが何に依存しているかを確認できます。
+\cmd{(*)} は別の場所で既に表示済みであることを示します。
+
+\subsection{requirements.txt へのエクスポート}
+
+pip を使っている人に環境を共有したり、
+サーバーにデプロイするときは \cmd{requirements.txt} 形式に変換できます。
+
+\begin{wslbox}[requirements.txt の生成]
+\begin{lstlisting}[style=bash]
+$ uv export -o requirements.txt
+$ uv export --no-hashes -o requirements.txt
+\end{lstlisting}
+\end{wslbox}
+
+\subsection{ロックファイルだけを更新する}
+
+パッケージをインストールせずに \cmd{uv.lock} だけを
+最新の状態に更新したいときは \cmd{uv lock} を使います。
+
+\begin{wslbox}[uv.lock の更新のみ]
+\begin{lstlisting}[style=bash]
+$ uv lock          # uv.lock を更新（インストールはしない）
+$ uv lock --upgrade  # 全パッケージを最新版に更新
+\end{lstlisting}
+\end{wslbox}
+
+\subsection{uvx：ツールを一時的に実行する}
+
+\cmd{uvx} はインストールせずにツールを一時実行できます（\cmd{pipx run} 相当）。
+コードフォーマッタやリンタを手軽に試すときに便利です。
+
+\begin{wslbox}[uvx によるツールの一時実行]
+\begin{lstlisting}[style=bash]
+$ uvx ruff check .       # コードチェック（ruff）
+$ uvx black script.py    # コードフォーマット（black）
+$ uvx mypy script.py     # 型チェック（mypy）
+\end{lstlisting}
+\end{wslbox}
+
+常用するツールはプロジェクトに追加する方法もあります：
+
+\begin{wslbox}[開発ツールをプロジェクトに追加]
+\begin{lstlisting}[style=bash]
+$ uv add --dev ruff      # 開発依存として追加
+$ uv run ruff check .
+\end{lstlisting}
+\end{wslbox}
+
+\subsection{キャッシュの管理}
+
+uv はダウンロードしたパッケージをキャッシュに保存するため、
+2 回目以降のインストールが高速です。
+ディスク容量が逼迫したときはキャッシュを削除できます。
+
+\begin{wslbox}[キャッシュの確認と削除]
+\begin{lstlisting}[style=bash]
+$ uv cache dir    # キャッシュの場所を確認
+$ uv cache clean  # キャッシュを全削除
+\end{lstlisting}
+\end{wslbox}

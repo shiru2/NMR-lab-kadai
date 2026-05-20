@@ -1,0 +1,82 @@
+\chapter{uv のインストール}
+
+\section{インストールコマンド}
+
+WSL のターミナルを開いて以下を実行します。
+\textbf{これは最初の1回だけ}でよいです。
+
+\begin{wslbox}[uv のインストール]
+\begin{lstlisting}[style=bash]
+$ curl -LsSf https://astral.sh/uv/install.sh | sh
+\end{lstlisting}
+\end{wslbox}
+
+実行すると以下のような出力が出ます。
+
+\begin{wslbox}[インストール時の出力例]
+\begin{lstlisting}[style=bash]
+downloading uv 0.6.x x86_64-unknown-linux-musl
+installing to /home/username/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either
+restart your shell or run:
+
+    source $HOME/.bashrc
+\end{lstlisting}
+\end{wslbox}
+
+\begin{notebox}[\cmd{curl ... | sh} について]
+インターネットからスクリプトをダウンロードして直接実行するコマンドです。
+Astral 社の公式インストーラーなので安全です。
+\end{notebox}
+
+\section{PATH の反映}
+
+インストール直後はコマンドがまだ認識されません。
+\textbf{ターミナルを一度閉じて開き直してください。}
+
+あるいは、ターミナルを開き直さずに即座に反映させる場合は：
+
+\begin{wslbox}[PATH を今すぐ反映する]
+\begin{lstlisting}[style=bash]
+$ source ~/.bashrc
+\end{lstlisting}
+\end{wslbox}
+
+\section{インストールの確認}
+
+以下のコマンドでバージョンを確認します。
+
+\begin{wslbox}[バージョン確認]
+\begin{lstlisting}[style=bash]
+$ uv --version
+uv 0.6.x (linux x86_64 ...)
+\end{lstlisting}
+\end{wslbox}
+
+このように表示されれば OK です。
+
+\begin{wslbox}[失敗した場合の出力]
+\begin{lstlisting}[style=bash]
+$ uv --version
+-bash: uv: command not found
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{command not found} と表示された場合は、
+ターミナルの再起動か \cmd{source ~/.bashrc} を試してください。
+それでも解決しない場合は第~\ref{chap:errors}章を参照してください。
+
+\section{uv のアップデート（将来の参考用）}
+
+uv 自体のアップデートは以下のコマンドで行えます。
+セットアップ時に実行する必要はありません。
+
+\begin{wslbox}[uv のアップデート]
+\begin{lstlisting}[style=bash]
+$ uv self update
+\end{lstlisting}
+\end{wslbox}

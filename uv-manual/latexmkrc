@@ -1,0 +1,14 @@
+#!/usr/bin/env perl
+# latexmkrc for uv-manual
+# Overleaf 互換: pLaTeX + dvipdfmx パイプライン
+
+$latex         = 'platex -synctex=1 -halt-on-error -kanji=utf8 %O %S';
+$bibtex        = 'pbibtex';
+$dvipdf        = 'dvipdfmx %O -o %D %S';
+$makeindex     = 'mendex %O -o %D %S';
+$pdf_mode      = 3;      # DVI → PDF via dvipdfmx
+$dvi_previewer = 'start';
+$pdf_previewer = 'start';
+
+# 中間ファイルの拡張子
+$clean_ext = 'dvi synctex.gz';

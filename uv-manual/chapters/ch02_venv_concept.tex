@@ -1,0 +1,108 @@
+\chapter{仮想環境とは何か}
+
+\section{なぜ仮想環境が必要か}
+
+Python でプログラムを書くとき、\cmd{numpy} や \cmd{matplotlib} などの
+外部ライブラリ（パッケージ）を使います。
+これらには\textbf{バージョン}があり、プロジェクトによって必要なバージョンが異なります。
+
+\subsection{バージョン衝突の問題}
+
+次のようなシナリオを考えてみましょう。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lXX}
+  \toprule
+  & B4課題（NMR ラボ） & 別の研究プログラム \\
+  \midrule
+  numpy & 1.26 が必要 & 2.0 が必要 \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+同じ Python 環境に両方をインストールしようとすると、
+片方が上書きされてどちらかが動かなくなります。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lX}
+  \toprule
+  状況 & 結果 \\
+  \midrule
+  numpy 1.26 をインストール & 別の研究プログラムが動かない \\
+  numpy 2.0 にアップグレード & B4課題が動かなくなる \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+これが\textbf{依存関係の衝突}です。
+
+\subsection{グローバル環境を汚さないために}
+
+\cmd{pip install} を繰り返すと、システム全体の Python 環境に
+パッケージがどんどん蓄積されます。
+
+\begin{itemize}
+  \item 使わなくなったパッケージが残り続ける
+  \item バージョンアップで他のプログラムが突然壊れる
+  \item 「先輩の PC では動いたのに自分の PC では動かない」が起きやすい
+\end{itemize}
+
+\section{仮想環境の仕組み}
+
+\textbf{仮想環境（Virtual Environment）}はプロジェクトごとに
+独立した Python の箱を作る仕組みです。
+
+\begin{center}
+\fbox{\parbox{0.85\textwidth}{
+\textbf{仮想環境のイメージ}\\[0.5em]
+システム全体\\
+\quad└ Ubuntu のシステム Python（素の状態）\\
+\quad\quad ├ B4課題用 仮想環境（\cmd{.venv}）\\
+\quad\quad │ \quad numpy 1.26, bm3d 4.0, jupyterlab 4.0 ...\\
+\quad\quad └ 別プロジェクト用 仮想環境（\cmd{.venv}）\\
+\quad\quad \quad \quad numpy 2.0, tensorflow ...
+}}
+\end{center}
+
+各仮想環境は\textbf{完全に独立}しており、一方を変更しても他方には影響しません。
+
+\section{仮想環境の実体}
+
+仮想環境はただのフォルダです。
+プロジェクトフォルダの中に \cmd{.venv/} というフォルダが作られ、
+その中にライブラリの実体が格納されます。
+
+\begin{wslbox}[.venv の中身のイメージ]
+\begin{lstlisting}[style=bash]
+2026年度_B4課題引継ぎ/
+  ├── pyproject.toml   # どのライブラリが必要か書いてある
+  ├── uv.lock          # バージョンを固定するファイル
+  ├── .venv/           # 仮想環境（uv sync で自動生成）
+  │     ├── bin/
+  │     └── lib/python3.11/site-packages/
+  │           ├── numpy/
+  │           ├── matplotlib/
+  │           └── ...
+  ├── No.1_FID/
+  └── ...
+\end{lstlisting}
+\end{wslbox}
+
+\begin{tipbox}
+\cmd{.venv/} の中身は自動生成されるため、自分で触る必要はありません。
+\cmd{uv sync} を実行するだけで作られます。
+\end{tipbox}
+
+\section{仮想環境を使うメリット}
+
+\begin{description}
+  \item[\textbf{依存関係の分離}]
+    プロジェクトごとに必要なパッケージだけをインストールできる
+  \item[\textbf{再現性}]
+    全員が同じバージョンのライブラリを使えるので
+    「自分の環境では動くのに\ldots\ldots」という問題が起きない
+  \item[\textbf{削除が簡単}]
+    不要になったら \cmd{.venv/} フォルダを削除するだけ
+  \item[\textbf{システムを汚さない}]
+    Ubuntu のシステム Python は変更しないので OS が安定する
+\end{description}

@@ -1,0 +1,92 @@
+\chapter{セットアップ手順まとめ（チートシート）}
+
+\section{最初の1回だけ行う作業}
+
+\begin{wslbox}[(1) uv のインストール]
+\begin{lstlisting}[style=bash]
+$ curl -LsSf https://astral.sh/uv/install.sh | sh
+\end{lstlisting}
+\end{wslbox}
+
+ターミナルを閉じて開き直す（または \cmd{source \textasciitilde/.bashrc}）。
+
+\begin{wslbox}[(2) 課題リポジトリの取得]
+\begin{lstlisting}[style=bash]
+$ cd ~
+$ git clone \
+  https://github.com/shiru2/NMR-lab-kadai.git
+\end{lstlisting}
+\end{wslbox}
+
+\begin{wslbox}[(3) 仮想環境の作成・パッケージのインストール]
+\begin{lstlisting}[style=bash]
+$ cd \
+  ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ uv sync
+\end{lstlisting}
+\end{wslbox}
+
+\section{毎回の作業}
+
+\textbf{VS Code（推奨）}：VS Code で
+\cmd{2026年度\_B4課題引継ぎ} フォルダを開くと、
+カーネルが自動で \cmd{.venv} に設定されます。
+
+\begin{wslbox}[VS Code でフォルダを開く（ターミナルから）]
+\begin{lstlisting}[style=bash]
+$ code \
+  ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+\end{lstlisting}
+\end{wslbox}
+
+\textbf{JupyterLab（任意）}：
+
+\begin{wslbox}[JupyterLab を使う場合]
+\begin{lstlisting}[style=bash]
+$ cd \
+  ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ uv run jupyter lab
+\end{lstlisting}
+\end{wslbox}
+
+ブラウザで \cmd{http://localhost:8888} を開いて作業する。
+終了するときはターミナルで \key{Ctrl} + \key{C}。
+
+\section{よく使うコマンドまとめ}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lX}
+  \toprule
+  コマンド & 内容 \\
+  \midrule
+  \cmd{uv --version} & uv のバージョン確認 \\
+  \cmd{uv sync} & 仮想環境を作成・更新する \\
+  \cmd{uv run python スクリプト名} & Python スクリプトを実行する \\
+  \cmd{uv run jupyter lab} & JupyterLab を起動する（任意） \\
+  \cmd{source .venv/bin/activate} & 仮想環境を手動で有効化する \\
+  \cmd{uv pip list} & インストール済みパッケージを確認する \\
+  \cmd{uv add パッケージ名} & 新しいパッケージを追加する \\
+  \cmd{git pull} & 課題ファイルを最新版に更新する \\
+  \cmd{uv self update} & uv 自体をアップデートする \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\section{トラブル時の確認フロー}
+
+課題ノートブックが動かないときは以下の順番で確認してください。
+
+\begin{enumerate}
+  \item \cmd{uv sync} を実行してパッケージが揃っているか確認する
+  \item VS Code で \cmd{2026年度\_B4課題引継ぎ} フォルダが
+    開かれているか確認する（サブフォルダだけでは不十分）
+  \item カーネルエラーが出たら \cmd{rm -rf .venv \&\& uv sync} を試す
+  \item それでも解決しない場合は第~\ref{chap:errors}章を参照する
+\end{enumerate}
+
+\vfill
+
+\begin{center}
+\small
+参考：uv 公式ドキュメント \url{https://docs.astral.sh/uv/}
+\end{center}

@@ -1,0 +1,39 @@
+\chapter{はじめに}
+
+このガイドは、\textbf{マニュアル第1弾（WSL 入門）の続編}です。
+WSL（Ubuntu）のインストールとターミナルの基本操作は完了している前提で進めます。
+
+\section{このガイドでやること}
+
+\begin{itemize}
+  \item 仮想環境とは何か、なぜ必要かを理解する
+  \item パッケージマネージャ \textbf{uv} をインストールする
+  \item \cmd{git clone} で課題リポジトリを取得する
+  \item \cmd{uv sync} で必要なライブラリをまとめてインストールする
+  \item VS Code でノートブックを開いて課題を実行する
+\end{itemize}
+
+\section{ゴール}
+
+このガイドを読み終えると、VS Code で課題フォルダを開くだけで
+作業を始められるようになります。
+
+\begin{wslbox}[毎回の起動（最終目標）]
+\begin{lstlisting}[style=bash]
+$ code ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+\end{lstlisting}
+\end{wslbox}
+
+\section{前提条件}
+
+\begin{itemize}
+  \item WSL（Ubuntu）がインストール済みであること
+  \item WSL のターミナルを開けること
+  \item インターネットに接続できること（初回セットアップ時のみ）
+  \item VS Code に Jupyter 拡張機能がインストールされていること
+\end{itemize}
+
+\begin{notebox}
+\textbf{Python のインストールは不要です。}\\
+uv が Python 本体も含めて自動でダウンロード・管理します。
+\end{notebox}

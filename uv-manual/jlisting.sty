@@ -1,0 +1,14 @@
+%%
+%% jlisting.sty  --  Japanese support for the listings package (minimal stub)
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{jlisting}[2006/05/10 v0.2 Japanese support for listings]
+
+\@ifpackageloaded{listings}{}{%
+  \RequirePackage{listings}%
+}
+
+%% Allow multibyte characters to pass through in listings
+\lstset{extendedchars=true}
+
+\endinput

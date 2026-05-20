@@ -1,0 +1,208 @@
+\chapter{よくあるエラーと対処}
+\label{chap:errors}
+
+\section{\cmd{uv: command not found}}
+
+\textbf{原因}：uv がインストールされていないか、PATH が通っていません。
+
+\textbf{対処1}：ターミナルを閉じて開き直す。
+
+\textbf{対処2}：PATH を今すぐ反映させる。
+
+\begin{wslbox}
+\begin{lstlisting}[style=bash]
+$ source ~/.bashrc
+\end{lstlisting}
+\end{wslbox}
+
+\textbf{対処3}：それでも解決しない場合は PATH を手動で追加する。
+
+\begin{wslbox}[PATH を手動で追加]
+\begin{lstlisting}[style=bash]
+$ echo 'export PATH="$HOME/.local/bin:$PATH"' \
+  >> ~/.bashrc
+$ source ~/.bashrc
+\end{lstlisting}
+\end{wslbox}
+
+最後に確認：
+
+\begin{wslbox}[確認]
+\begin{lstlisting}[style=bash]
+$ uv --version
+uv 0.6.x (linux x86_64 ...)
+\end{lstlisting}
+\end{wslbox}
+
+\section{\cmd{No pyproject.toml found}}
+
+\textbf{原因}：\cmd{pyproject.toml} のあるフォルダにいません。
+
+\textbf{対処}：正しいフォルダに移動してから実行する。
+
+\begin{wslbox}[正しいフォルダへ移動して実行]
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ uv sync
+\end{lstlisting}
+\end{wslbox}
+
+フォルダに \cmd{pyproject.toml} があるか確認：
+
+\begin{wslbox}[pyproject.toml の確認]
+\begin{lstlisting}[style=bash]
+$ ls pyproject.toml
+pyproject.toml
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{pyproject.toml} と表示されれば正しいフォルダにいます。
+
+\section{JupyterLab でカーネルが見つからない}
+
+\textbf{原因}：\cmd{uv run} をつけずに JupyterLab を起動しています。
+
+\textbf{対処}：ターミナルで \key{Ctrl} + \key{C} を押して一度終了し、
+正しいコマンドで起動し直す。
+
+\begin{wslbox}[正しい起動コマンド]
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ uv run jupyter lab
+\end{lstlisting}
+\end{wslbox}
+
+\section{\cmd{ModuleNotFoundError} が出る}
+
+\textbf{原因1}：\cmd{uv sync} が完了していない。
+
+\textbf{対処}：\cmd{uv sync} を再実行する。
+
+\begin{wslbox}
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ uv sync
+\end{lstlisting}
+\end{wslbox}
+
+\textbf{原因2}：\cmd{uv run} なしで JupyterLab を起動している。
+$\rightarrow$ 前節の対処と同じ手順で起動し直す。
+
+\section{\cmd{uv sync} がネットワークエラーで止まる}
+
+\textbf{原因}：インターネット接続が不安定、または
+学内ネットワークのプロキシが干渉しています。
+
+\textbf{対処}：数分待ってから再実行する。
+\cmd{uv sync} は途中まで進んだ場合、次回実行時に続きから再開します。
+
+\begin{wslbox}[再実行]
+\begin{lstlisting}[style=bash]
+$ uv sync
+\end{lstlisting}
+\end{wslbox}
+
+繰り返し発生する場合は教員・先輩に相談してください。
+
+\section{VS Code で「カーネルを起動できませんでした」と表示される}
+
+\textbf{症状}：ノートブックを開くと
+「Python 環境 'nmrlab-b4-2026 (3.12.x)' を使用できなくなったため、
+カーネルを起動できませんでした」と表示される。
+
+\textbf{原因}：VS Code が以前選択したカーネルをキャッシュしているため、
+\cmd{.venv/} を作り直したあとに古い参照が残ります。
+\cmd{pyvenv.cfg} を手動で書き換えても \cmd{uv sync} で元に戻るので、
+この方法では解決しません。
+
+\textbf{対処}：\cmd{uv sync} で \cmd{.venv/} を作り直したあと、
+VS Code でカーネルを選び直す。
+
+\begin{enumerate}
+  \item ターミナルで \cmd{.venv/} を削除して再構築する
+\end{enumerate}
+
+\begin{wslbox}[.venv を削除して再構築]
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ rm -rf .venv
+$ uv sync
+\end{lstlisting}
+\end{wslbox}
+
+\begin{enumerate}
+  \setcounter{enumi}{1}
+  \item VS Code でノートブックを開き、右上の
+    「カーネルを選択」をクリック
+  \item 「別のカーネルを選択」$\rightarrow$「Python 環境」を選ぶ
+  \item 一覧から \cmd{.venv/bin/python}（または
+    \texttt{nmrlab-b4-2026 (3.12.x)}）を選択する
+\end{enumerate}
+
+\begin{notebox}[一覧に出ない場合]
+「Python 環境の一覧を更新」をクリックするか、
+VS Code を開き直してから再度選択してください。
+\end{notebox}
+
+\section{Jupyter で「Python 3.12.x が使用できなくなった」と表示される}
+
+\textbf{原因}：フォルダ内に古い \cmd{.venv/} が残っており、
+そこに保存されていた Python のパスが現在の環境に存在しません。
+（配布ファイルを古いバージョンから上書き展開した場合に起こります。）
+
+\textbf{対処}：\cmd{.venv/} を削除してから \cmd{uv sync} を再実行する。
+
+\begin{wslbox}[.venv を削除して再構築]
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ rm -rf .venv
+$ uv sync
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{uv sync} が完了したら VS Code でフォルダを開き直し、
+カーネルを \cmd{.venv/bin/python} に選び直してください。
+
+\section{\cmd{uv sync} 後に \cmd{Permission denied} が出る}
+
+\textbf{原因}：フォルダを Windows の共有ドライブから直接コピーした場合、
+ファイルの実行権限が失われることがあります。
+
+\textbf{対処1}：\cmd{.venv/} を削除して再構築する（最も確実）。
+
+\begin{wslbox}[.venv を削除して再構築]
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ rm -rf .venv
+$ uv sync
+\end{lstlisting}
+\end{wslbox}
+
+\textbf{対処2}：フォルダ全体の権限を修正する。
+
+\begin{wslbox}[権限の変更]
+\begin{lstlisting}[style=bash]
+$ chmod -R u+rw \
+  ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+\end{lstlisting}
+\end{wslbox}
+
+\begin{notebox}[git clone で取得した場合は発生しにくい]
+\cmd{git clone} で正しく取得した場合、パーミッション問題は
+ほとんど起きません。問題が続く場合は \cmd{.venv/} を削除して
+\cmd{uv sync} を再実行してください（第6章参照）。
+\end{notebox}
+
+\section{ブラウザが自動で開かない}
+
+\textbf{原因}：WSL から Windows のブラウザを自動起動できない場合があります。
+
+\textbf{対処}：ターミナルに表示された URL を手動でコピーしてブラウザに貼り付ける。
+
+\begin{wslbox}[URL の場所]
+\begin{lstlisting}[style=bash]
+[I ServerApp] Jupyter Server is running at:
+[I ServerApp] http://localhost:8888/lab
+  ?token=abc123def456...  <- これを全部コピーする
+\end{lstlisting}
+\end{wslbox}

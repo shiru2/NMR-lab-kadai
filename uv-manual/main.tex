@@ -1,0 +1,224 @@
+% !TEX program = platex
+\documentclass[a4j,12pt,openany]{jsreport}
+
+% ===== パッケージ =====
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{xcolor}
+\usepackage[dvipdfmx,bookmarksnumbered=true,colorlinks=true,
+  linkcolor=black,urlcolor=black,citecolor=black,
+  anchorcolor=black,filecolor=black]{hyperref}
+\usepackage{pxjahyper}
+\usepackage{listings}
+\usepackage{jlisting}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage[skins,breakable]{tcolorbox}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{titlesec}
+
+% ===== ページレイアウト =====
+\geometry{top=20mm, bottom=20mm, left=20mm, right=20mm}
+
+% ===== 表の可読性設定 =====
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{6pt}
+
+% ===== 色定義 =====
+\definecolor{bashdark}{HTML}{1E1E1E}
+\definecolor{bashtext}{HTML}{D4D4D4}
+\definecolor{psbg}{HTML}{012456}
+\definecolor{pstext}{HTML}{EEEDF0}
+\definecolor{notebg}{HTML}{EFF8E2}
+\definecolor{noteframe}{HTML}{4CAF50}
+\definecolor{warnbg}{HTML}{FFF8E1}
+\definecolor{warnframe}{HTML}{FF8F00}
+\definecolor{tipbg}{HTML}{E3F2FD}
+\definecolor{tipframe}{HTML}{1565C0}
+\definecolor{dangerbg}{HTML}{FFEBEE}
+\definecolor{dangerframe}{HTML}{C62828}
+\definecolor{pybg}{HTML}{F5F5FF}
+\definecolor{pyframe}{HTML}{5C6BC0}
+
+% ===== コードリスティング =====
+\lstdefinestyle{bash}{
+  backgroundcolor=\color{bashdark},
+  basicstyle=\ttfamily\small\color{bashtext},
+  keywordstyle=\color{cyan!80},
+  commentstyle=\color{gray!70}\itshape,
+  stringstyle=\color{yellow!70},
+  showstringspaces=false,
+  breaklines=true,
+  frame=none,
+  xleftmargin=1em,
+  xrightmargin=1em,
+  aboveskip=0.6em,
+  belowskip=0.6em,
+  language=bash,
+}
+\lstdefinestyle{python}{
+  backgroundcolor=\color{pybg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue!70}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{orange!70!red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{pyframe},
+  xleftmargin=1em,
+  xrightmargin=1em,
+  aboveskip=0.6em,
+  belowskip=0.6em,
+  language=python,
+}
+\lstdefinestyle{toml}{
+  backgroundcolor=\color{pybg},
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{orange!70!red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{pyframe},
+  xleftmargin=1em,
+  xrightmargin=1em,
+  aboveskip=0.6em,
+  belowskip=0.6em,
+}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+}
+
+% ===== tcolorbox 環境 =====
+\newtcolorbox{wslbox}[1][Ubuntu/WSL ターミナル]{
+  colback=bashdark,
+  coltext=bashtext,
+  coltitle=white,
+  colbacktitle=black!60,
+  fonttitle=\small\bfseries\ttfamily,
+  title=#1,
+  boxrule=0pt,
+  sharp corners,
+  left=0.5em, right=0.5em, top=0.3em, bottom=0.3em,
+  titlerule=0pt,
+  attach boxed title to top left={yshift=-0.1em},
+  boxed title style={colback=black!60, sharp corners, boxrule=0pt},
+  breakable,
+}
+\newtcolorbox{notebox}[1][メモ]{
+  colback=notebg,
+  colframe=noteframe,
+  coltitle=white,
+  colbacktitle=noteframe,
+  fonttitle=\small\bfseries,
+  title=#1,
+  sharp corners,
+  boxrule=0.5pt,
+  breakable,
+}
+\newtcolorbox{warnbox}[1][注意]{
+  colback=warnbg,
+  colframe=warnframe,
+  coltitle=white,
+  colbacktitle=warnframe,
+  fonttitle=\small\bfseries,
+  title=#1,
+  sharp corners,
+  boxrule=0.5pt,
+  breakable,
+}
+\newtcolorbox{tipbox}[1][ポイント]{
+  colback=tipbg,
+  colframe=tipframe,
+  coltitle=white,
+  colbacktitle=tipframe,
+  fonttitle=\small\bfseries,
+  title=#1,
+  sharp corners,
+  boxrule=0.5pt,
+  breakable,
+}
+\newtcolorbox{dangerbox}[1][危険]{
+  colback=dangerbg,
+  colframe=dangerframe,
+  coltitle=white,
+  colbacktitle=dangerframe,
+  fonttitle=\small\bfseries,
+  title=#1,
+  sharp corners,
+  boxrule=0.5pt,
+  breakable,
+}
+
+% ===== インラインコマンド =====
+\newcommand{\cmd}[1]{\texttt{#1}}
+\newcommand{\key}[1]{\fbox{\ttfamily\small #1}}
+\newcommand{\win}{【Windows】}
+\newcommand{\wsl}{【WSL】}
+
+% ===== ヘッダ・フッタ =====
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\textit{B4課題 仮想環境セットアップガイド}}
+\fancyhead[RE,LO]{\small\leftmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ===== 章タイトルのスタイル =====
+\titleformat{\chapter}[block]
+  {\Large\bfseries}
+  {\chaptertitlename\thechapter}
+  {1em}{}
+  [\vspace{0.5em}\hrule\vspace{0.5em}]
+
+% ===== ドキュメント開始 =====
+\begin{document}
+
+% --- タイトルページ ---
+\begin{titlepage}
+  \vspace*{3cm}
+  \begin{center}
+    {\Huge\bfseries B4課題\\仮想環境セットアップガイド}\\[1.5em]
+    {\Large uv を使った Python 環境構築と\\JupyterLab の起動}\\[3em]
+    \hrule\vspace{1em}
+    {\large
+      前提：マニュアル第1弾（WSL 入門）完了済み\\[0.5em]
+      2026 ver.
+    }\\[2em]
+    \hrule
+  \end{center}
+  \vfill
+\end{titlepage}
+
+% --- 目次 ---
+\setcounter{tocdepth}{2}
+\tableofcontents
+\clearpage
+
+% ===== 本文 =====
+\input{chapters/ch01_intro}
+\input{chapters/ch02_venv_concept}
+\input{chapters/ch03_uv}
+\input{chapters/ch04_install}
+\input{chapters/ch05_folder}
+\input{chapters/ch06_copy}
+\input{chapters/ch07_setup}
+\input{chapters/ch08_jupyter}
+\input{chapters/ch09_errors}
+\input{chapters/ch10_tips}
+\input{chapters/ch11_cheatsheet}
+\input{chapters/ch12_research}
+
+% ===== 付録 =====
+\appendix
+\input{chapters/app_refs}
+
+\end{document}

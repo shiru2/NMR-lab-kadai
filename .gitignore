@@ -1,0 +1,22 @@
+# Python 仮想環境
+.venv/
+__pycache__/
+*.pyc
+
+# Jupyter チェックポイント
+.ipynb_checkpoints/
+
+# LaTeX 中間ファイル
+uv-manual/*.aux
+uv-manual/*.log
+uv-manual/*.dvi
+uv-manual/*.synctex.gz
+uv-manual/*.toc
+uv-manual/*.out
+
+# zip
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db

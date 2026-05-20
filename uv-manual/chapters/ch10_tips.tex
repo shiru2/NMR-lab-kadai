@@ -1,0 +1,84 @@
+\chapter{補足知識}
+
+\section{\cmd{.venv/} フォルダの扱い}
+
+\cmd{.venv/} は各自の PC で \cmd{uv sync} を実行すれば再生成できます。
+以下のことを覚えておいてください。
+
+\begin{itemize}
+  \item 共有フォルダに含める必要はない
+  \item メールや zip でやり取りする必要はない
+  \item 誤って削除しても \cmd{uv sync} で復元できる
+  \item リポジトリの \cmd{.gitignore} で除外済み
+\end{itemize}
+
+\section{環境を作り直す}
+
+環境が壊れたと感じたときは \cmd{.venv/} を削除して作り直せます。
+
+\begin{wslbox}[環境の再作成]
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ rm -rf .venv
+$ uv sync
+\end{lstlisting}
+\end{wslbox}
+
+\section{新しいパッケージを追加する}
+
+演習の範囲を超えて新しいライブラリを試したい場合：
+
+\begin{wslbox}[パッケージの追加]
+\begin{lstlisting}[style=bash]
+$ uv add パッケージ名
+\end{lstlisting}
+\end{wslbox}
+
+例えば \cmd{pandas} を追加する場合：
+
+\begin{wslbox}[pandas の追加例]
+\begin{lstlisting}[style=bash]
+$ uv add pandas
+Resolved 49 packages in 0.3ms
+Installed 2 packages in 1.2s
+ + pandas==2.2.3
+ + python-dateutil==2.9.0
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{pyproject.toml} と \cmd{uv.lock} が自動的に更新されます。
+
+\section{スクリプトを直接実行する}
+
+ノートブックを使わず Python スクリプト（\cmd{.py} ファイル）を
+直接実行したい場合も \cmd{uv run} を使います。
+
+\begin{wslbox}[スクリプトの直接実行]
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai/2026年度_B4課題引継ぎ/No.1_FID
+$ uv run python makesignal.py
+\end{lstlisting}
+\end{wslbox}
+
+\section{MATLABとのデータ互換}
+
+このプロジェクトでは \cmd{scipy.io} を通じて
+MATLAB の \cmd{.mat} ファイルを読み書きできます。
+
+\begin{lstlisting}[style=python, caption={.mat ファイルの読み込み例}]
+import scipy.io
+
+# MATLAB の .mat ファイルを読む
+data = scipy.io.loadmat("Signal.mat")
+
+# Python の配列を .mat ファイルに保存する
+scipy.io.savemat("result.mat", {"signal": signal})
+\end{lstlisting}
+
+\section{インストール済みパッケージの確認}
+
+\begin{wslbox}[パッケージ一覧の表示]
+\begin{lstlisting}[style=bash]
+$ uv pip list
+\end{lstlisting}
+\end{wslbox}

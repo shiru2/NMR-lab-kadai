@@ -1,0 +1,57 @@
+\chapter{課題リポジトリを取得する}
+
+課題ファイルは GitHub 上で管理されています。
+\cmd{git clone} コマンドで WSL のホームディレクトリに取得します。
+\textbf{この操作は最初の1回だけ}行います。
+
+% =================================================
+\section{git clone で取得する}
+% =================================================
+
+WSL ターミナルで以下を実行します。
+
+\begin{wslbox}[リポジトリのクローン]
+\begin{lstlisting}[style=bash]
+$ cd ~
+$ git clone \
+  https://github.com/shiru2/NMR-lab-kadai.git
+\end{lstlisting}
+\end{wslbox}
+
+正常に完了すると \cmd{NMR-lab-kadai} フォルダが作成されます。
+
+\begin{wslbox}[取得の確認]
+\begin{lstlisting}[style=bash]
+$ ls \
+  ~/NMR-lab-kadai/2026年度_B4課題引継ぎ/
+No.1_FID  No.2_FFT1D  No.3_FFT2D
+No.4_DFT_exercise  No.5_CompressedSensing
+No.6_Denoising  No.7_Metrics  No.8_CT
+README.md  pyproject.toml  uv.lock
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{pyproject.toml} と \cmd{uv.lock} が表示されれば正しく取得できています。
+
+\begin{notebox}[git が使えない場合]
+大学のネットワーク環境によって \cmd{git clone} が
+ブロックされる場合があります。
+その場合は GitHub のページから zip をダウンロードして展開してください。\\[0.5em]
+\texttt{Code} $\rightarrow$ \texttt{Download ZIP} を選び、
+展開したフォルダを\\
+\cmd{{\textbackslash}{\textbackslash}wsl.localhost{\textbackslash}Ubuntu{\textbackslash}home{\textbackslash}username}\\
+に配置してください（\cmd{username} は自分の WSL ユーザー名）。
+\end{notebox}
+
+% =================================================
+\section{2回目以降：最新版に更新する}
+% =================================================
+
+課題ファイルが更新された場合は \cmd{git pull} で最新版を取得できます。
+
+\begin{wslbox}[最新版に更新]
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai
+$ git pull
+\end{lstlisting}
+\end{wslbox}

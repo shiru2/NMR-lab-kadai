@@ -1,0 +1,119 @@
+\chapter{ノートブックの実行方法}
+
+% =================================================
+\section{VS Code でノートブックを開く（推奨）}
+% =================================================
+
+\subsection{事前準備：Jupyter 拡張機能のインストール}
+
+VS Code を初めて使う場合のみ必要です。
+
+\begin{enumerate}
+  \item VS Code を開く
+  \item 左側の拡張機能アイコン（\key{Ctrl}+\key{Shift}+\key{X}）をクリック
+  \item 検索欄に \texttt{Jupyter} と入力
+  \item \texttt{Jupyter}（Microsoft 製）をインストール
+\end{enumerate}
+
+\subsection{フォルダを開いてノートブックを実行する}
+
+\begin{enumerate}
+  \item VS Code で \cmd{File} $\rightarrow$ \cmd{Open Folder} を選ぶ
+  \item \cmd{2026年度\_B4課題引継ぎ} フォルダを開く
+  \item 左側のファイルツリーから \cmd{.ipynb} ファイルをクリック
+  \item 初回はカーネル選択が求められるので
+    \cmd{.venv/bin/python} を選ぶ
+\end{enumerate}
+
+\begin{notebox}[カーネルの選び方]
+ノートブックを開いたとき、右上に
+「カーネルを選択」または Python のバージョンが表示されます。
+クリックして一覧から \cmd{.venv/bin/python}（または
+\texttt{Python 3.11.x ('.venv')}）を選んでください。\\[0.5em]
+一覧に出ない場合は先に \cmd{uv sync} を実行してから
+VS Code を開き直してください。
+\end{notebox}
+
+\subsection{セルの実行}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lX}
+  \toprule
+  操作 & 方法 \\
+  \midrule
+  セルを実行する & \key{Shift} + \key{Enter} \\
+  セルを実行（その場にとどまる） & \key{Ctrl} + \key{Enter} \\
+  全セルを一括実行 & ノートブック上部の \texttt{Run All} ボタン \\
+  カーネルを再起動 & \texttt{Restart} ボタンまたは \key{F1} で検索 \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+% =================================================
+\section{課題ノートブックの一覧}
+% =================================================
+
+\begin{center}
+\begin{tabularx}{\linewidth}{ll>{\raggedright\arraybackslash}X}
+  \toprule
+  課題 & ファイル & 内容 \\
+  \midrule
+  No.1 & \cmd{No.1\_FID/makesignal.ipynb} & FID 信号生成とノイズ付加 \\
+  No.1 & \cmd{No.1\_FID/heikatsu.ipynb} & 移動平均による平滑化 \\
+  No.2 & \cmd{No.2\_FFT1D/FFT1D.ipynb} & 1次元 FFT \\
+  No.2 & \cmd{No.2\_FFT1D/kukei.ipynb} & 矩形パルスの FFT \\
+  No.2 & \cmd{No.2\_FFT1D/sft.ipynb} & スライディング FFT \\
+  No.3 & \cmd{No.3\_FFT2D/FFT2D.ipynb} & 2次元 FFT（MRI k空間） \\
+  No.4 & \cmd{No.4\_DFT\_exercise/DFT\_template.ipynb} & DFT 手動実装（演習） \\
+  No.5 & \cmd{No.5\_CompressedSensing/cs\_tv.ipynb} & 圧縮センシング（TV 法） \\
+  No.5 & \cmd{No.5\_CompressedSensing/cs\_wavelet.ipynb} & 圧縮センシング（Wavelet） \\
+  No.6 & \cmd{No.6\_Denoising/add\_noise.ipynb} & ノイズ付加 \\
+  No.6 & \cmd{No.6\_Denoising/denoise\_bm3d.ipynb} & BM3D デノイジング \\
+  No.7 & \cmd{No.7\_Metrics/psnr\_ssim.ipynb} & PSNR・SSIM 計算 \\
+  No.8 & \cmd{No.8\_CT/ct\_pipeline.ipynb} & CT フィルタード逆投影 \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{notebox}[No.4 は演習形式]
+\cmd{DFT\_template.ipynb} は空白セルに自分でコードを書く演習です。
+解答例は \cmd{DFT\_answer.ipynb} にあります。
+まず自分で考えてから見るようにしてください。
+\end{notebox}
+
+\begin{notebox}[No.6 の WNNM はオプション]
+\cmd{denoise\_wnnm.ipynb} は発展課題です。
+256$\times$256 画像で数分かかるため、
+まず \cmd{denoise\_bm3d.ipynb} を完了させてから取り組んでください。
+\end{notebox}
+
+% =================================================
+\section{JupyterLab を使う場合（任意）}
+% =================================================
+
+ブラウザ上でノートブックを操作したい場合は JupyterLab を使えます。
+
+\begin{wslbox}[JupyterLab の起動]
+\begin{lstlisting}[style=bash]
+$ cd ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+$ uv run jupyter lab
+\end{lstlisting}
+\end{wslbox}
+
+\begin{warnbox}[\cmd{uv run} を必ずつける]
+\cmd{jupyter lab} だけで起動すると仮想環境の外から起動してしまい、
+ライブラリが見つかりません。
+必ず \cmd{uv run jupyter lab} と打ってください。
+\end{warnbox}
+
+起動するとターミナルに URL が表示されます。
+ブラウザで \cmd{http://localhost:8888} を開いてください。
+（WSL では自動でブラウザが開かない場合があります。
+その場合は URL 全体をコピーして貼り付けてください。）
+
+終了するときはターミナルで \key{Ctrl} + \key{C} を押します。
+
+\begin{warnbox}[ブラウザのタブを閉じるだけでは終了しない]
+タブを閉じてもサーバーは動き続けます。
+必ずターミナルで \key{Ctrl} + \key{C} を押して終了してください。
+\end{warnbox}

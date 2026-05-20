@@ -1,0 +1,238 @@
+\chapter{uv の仕組みを理解する}
+
+\section{uv の概要}
+
+\textbf{uv}（読み方：ユーブイ）は Astral 社が開発した
+Python パッケージマネージャです。
+公式サイト：\url{https://docs.astral.sh/uv/}
+
+従来の \cmd{pip}（パッケージインストーラー）と
+\cmd{venv}（仮想環境作成ツール）の両方の機能を一つに統合しており、
+以下の特徴があります。
+
+\begin{description}
+  \item[\textbf{高速}]
+    Rust で書かれており、\cmd{pip} より 10〜100 倍速い。
+    多数のパッケージをインストールしても数秒で完了する
+  \item[\textbf{再現性が高い}]
+    \cmd{uv.lock} ファイルで全員がまったく同じバージョンを使える
+  \item[\textbf{Python も自動管理}]
+    Python 本体のインストールも自動で行う。
+    事前に Python をインストールしておく必要がない
+  \item[\textbf{シンプル}]
+    \cmd{uv sync} 一発で仮想環境の作成からパッケージのインストールまで完了する
+\end{description}
+
+\section{pip + venv との比較}
+
+従来の方法（\cmd{pip} + \cmd{venv}）と \cmd{uv} を比べると次のとおりです。
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lXX}
+  \toprule
+  操作 & pip + venv & uv \\
+  \midrule
+  Python のインストール & 別途必要 & 自動 \\
+  仮想環境を作る & \cmd{python3 -m venv .venv} & 自動（\cmd{uv sync} で） \\
+  仮想環境を有効化 & \cmd{source .venv/bin/activate} & 不要 \\
+  パッケージをインストール & \cmd{pip install -r req.txt} & \cmd{uv sync} \\
+  スクリプトを実行 & \cmd{python script.py} & \cmd{uv run python script.py} \\
+  パッケージを追加 & \cmd{pip install xxx} & \cmd{uv add xxx} \\
+  新規プロジェクト作成 & 手動で \cmd{pyproject.toml} 作成 & \cmd{uv init} \\
+  速度 & 普通 & 10〜100 倍速い \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{tipbox}[activate が不要な理由]
+uv では \cmd{source .venv/bin/activate} による仮想環境の有効化が不要です。
+\cmd{uv run} をつけるだけで、自動的に \cmd{.venv/} 内の Python と
+ライブラリを使って実行してくれます。
+「有効化し忘れてシステム Python で実行してしまった」という
+よくあるミスがなくなります。
+\end{tipbox}
+
+% -------------------------------------------------
+\section{pyproject.toml とは}
+% -------------------------------------------------
+
+\cmd{pyproject.toml} はプロジェクトの設定ファイルです。
+「このプロジェクトには何が必要か」をまとめて書く場所です。
+
+\subsection{ファイルの構造}
+
+B4課題フォルダの \cmd{pyproject.toml} を見てみましょう。
+
+\begin{lstlisting}[style=toml, caption={pyproject.toml の構造}]
+[project]
+name = "nmrlab-b4-2026"      # プロジェクトの名前
+version = "2026.1"            # バージョン
+requires-python = ">=3.11"   # Python 3.11 以上が必要
+
+dependencies = [             # 必要なライブラリの一覧
+    "numpy>=1.26",           # numpy バージョン 1.26 以上
+    "scipy>=1.12",
+    "matplotlib>=3.8",
+    "scikit-image>=0.22",
+    "PyWavelets>=1.5",
+    "bm3d>=4.0",
+    "openpyxl>=3.1",
+    "jupyterlab>=4.0",
+    "ipywidgets>=8.0",
+    "japanize-matplotlib>=1.1",
+]
+
+[tool.uv]
+dev-dependencies = [         # 開発時だけ使うツール（通常不要）
+    "pytest>=8.0",
+]
+\end{lstlisting}
+
+\subsection{バージョン指定の書き方}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lX}
+  \toprule
+  書き方 & 意味 \\
+  \midrule
+  \cmd{"numpy>=1.26"} & 1.26 以上ならどのバージョンでも OK \\
+  \cmd{"numpy==1.26.4"} & 1.26.4 ぴったり（固定） \\
+  \cmd{"numpy>=1.26,<2.0"} & 1.26 以上かつ 2.0 未満 \\
+  \cmd{"numpy"} & バージョン指定なし（最新） \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{notebox}[pyproject.toml は「希望」を書く場所]
+\cmd{pyproject.toml} の \cmd{dependencies} は
+「このバージョン以上なら動く」という\textbf{条件}を書くところです。
+実際にインストールする\textbf{正確なバージョン}は
+\cmd{uv.lock} に記録されます。
+\end{notebox}
+
+\subsection{パッケージを追加するには}
+
+\cmd{pyproject.toml} を直接編集してもよいですが、
+\cmd{uv add} コマンドを使うと自動で追記されます。
+
+\begin{wslbox}[パッケージの追加]
+\begin{lstlisting}[style=bash]
+$ uv add pandas
+\end{lstlisting}
+\end{wslbox}
+
+実行すると \cmd{pyproject.toml} の \cmd{dependencies} に
+\cmd{"pandas>=X.X.X"} が自動追記されます。
+
+% -------------------------------------------------
+\section{uv.lock とは}
+% -------------------------------------------------
+
+\cmd{uv.lock} は uv が自動生成する\textbf{ロックファイル}です。
+\textbf{絶対に手動で編集してはいけません。}
+
+\subsection{なぜ必要か}
+
+\cmd{pyproject.toml} には「numpy 1.26 以上」と書きましたが、
+これだけでは「今インストールしたら 1.26.4 なのか 1.27.0 なのか」が
+わかりません。
+
+時間が経つと最新バージョンが変わるため、
+同じ \cmd{pyproject.toml} を使っても
+インストールのタイミングによって入るバージョンが変わります。
+
+\begin{center}
+\fbox{\parbox{0.85\textwidth}{
+\textbf{ロックファイルがないと起きる問題}\\[0.5em]
+自分（3月にインストール）：numpy 1.26.4\\
+後輩（9月にインストール）：numpy 1.27.2\\
+→ 同じコードが異なる環境で動く可能性がある
+}}
+\end{center}
+
+\subsection{uv.lock が解決すること}
+
+\cmd{uv.lock} には\textbf{全パッケージの正確なバージョンとハッシュ値}が
+記録されます。
+
+\begin{wslbox}[uv.lock の中身（抜粋）]
+\begin{lstlisting}[style=bash]
+version = 1
+requires-python = ">=3.11"
+
+[[package]]
+name = "numpy"
+version = "1.26.4"    # 正確なバージョンが固定されている
+source = { registry = "..." }
+sdist = { url = "...", hash = "sha256:abc123..." }
+\end{lstlisting}
+\end{wslbox}
+
+\cmd{uv sync} は \cmd{uv.lock} を読んで\textbf{全員が同じバージョン}を
+インストールします。誰がいつ実行しても同じ環境になります。
+
+\subsection{uv.lock の管理ルール}
+
+\begin{itemize}
+  \item \textbf{手動で編集しない}（uv が自動管理する）
+  \item \textbf{共有フォルダやリポジトリに含める}（全員で共有する）
+  \item \cmd{uv add}/\cmd{uv remove} を実行すると自動更新される
+  \item \cmd{uv sync} を実行しても \cmd{uv.lock} は変化しない
+    （\cmd{uv.lock} に従ってインストールするだけ）
+\end{itemize}
+
+\begin{tipbox}[pyproject.toml と uv.lock の関係まとめ]
+\begin{tabularx}{\linewidth}{lXX}
+  \toprule
+  & \cmd{pyproject.toml} & \cmd{uv.lock} \\
+  \midrule
+  書いてあること & 「これ以上のバージョンが必要」という条件 & 実際にインストールする正確なバージョン \\
+  誰が書く & 人間（uv add でも可） & uv が自動生成 \\
+  手動編集 & OK & してはいけない \\
+  共有する & する & する \\
+  \bottomrule
+\end{tabularx}
+\end{tipbox}
+
+% -------------------------------------------------
+\section{uv sync の動作}
+% -------------------------------------------------
+
+\cmd{uv sync} は以下のことを\textbf{すべて自動で}行います。
+
+\begin{enumerate}
+  \item \cmd{pyproject.toml} を読んで必要な Python バージョンを確認
+  \item 必要な Python がなければ自動ダウンロード・インストール
+  \item \cmd{.venv/} フォルダを作成（すでにあれば再利用）
+  \item \cmd{uv.lock} を読んで記録されたバージョンのパッケージを
+    \cmd{.venv/} にインストール
+  \item 余分なパッケージ（\cmd{uv.lock} にないもの）があれば削除
+\end{enumerate}
+
+\begin{wslbox}[uv sync の出力例（初回）]
+\begin{lstlisting}[style=bash]
+$ uv sync
+Using CPython 3.11.x        <- Python を自動選択
+Creating virtual environment at: .venv  <- .venv を作成
+Resolved 47 packages in 0.5ms
+Installed 47 packages in 8.2s  <- ここが pip より圧倒的に速い
+ + bm3d==4.0.2
+ + numpy==1.26.4
+ + jupyterlab==4.3.6
+ ...
+\end{lstlisting}
+\end{wslbox}
+
+\begin{wslbox}[uv sync の出力例（2回目以降・差分なし）]
+\begin{lstlisting}[style=bash]
+$ uv sync
+Resolved 47 packages in 0.5ms
+Audited 47 packages in 1ms   <- 確認のみ、インストールなし
+\end{lstlisting}
+\end{wslbox}
+
+\begin{notebox}[uv sync は「冪等」]
+何度実行しても結果は同じです。
+すでに正しい状態なら何もしません。
+環境がおかしいと感じたらとりあえず \cmd{uv sync} を試してください。
+\end{notebox}

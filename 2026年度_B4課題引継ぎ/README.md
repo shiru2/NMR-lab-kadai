@@ -16,6 +16,13 @@ uv sync
 uv run jupyter lab
 ```
 
+### VS Code で使う場合
+
+`uv sync` 後、ノートブックを開いてカーネルを `.venv` に切り替えてください。
+
+1. ノートブック右上の「カーネル選択」をクリック
+2. **Python Environments** → `.venv (Python 3.12)` を選択
+
 ## 演習一覧
 
 | No. | テーマ | 主なライブラリ |

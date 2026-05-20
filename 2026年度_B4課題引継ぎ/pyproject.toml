@@ -2,7 +2,7 @@
 name = "nmrlab-b4-2026"
 version = "2026.1"
 description = "B4 NMR/MRI laboratory exercises — Python conversion"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.0",
     "scipy>=1.14",

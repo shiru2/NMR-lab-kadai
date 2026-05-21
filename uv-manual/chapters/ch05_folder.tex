@@ -4,43 +4,39 @@
 
 \cmd{git clone} を実行すると、ホームディレクトリ直下に
 リポジトリフォルダが作成されます。
-課題ファイルはその中の \cmd{NMRlab/2026年度\_B4課題引継ぎ/} にあります。
+課題フォルダはリポジトリ直下の \cmd{2026年度\_B4課題引継ぎ/} にあります。
 
 \begin{wslbox}[フォルダ構成]
 \begin{lstlisting}[style=bash]
-/home/username/                      <- ホームディレクトリ（~ と同じ）
-└── NMR-lab-kadai/       <- git clone で作成される
-    └── NMRlab/
-        └── 2026年度_B4課題引継ぎ/  <- VS Code で開くフォルダ
-            ├── .vscode/
-            │   └── settings.json    <- VS Code の設定（自動でカーネル選択）
-            ├── pyproject.toml
-            ├── uv.lock
-            ├── README.md
-        ├── No.1_FID/
-        │   ├── makesignal.ipynb
-        │   ├── makesignal.py
-        │   ├── heikatsu.ipynb
-        │   └── heikatsu.py
-        ├── No.2_FFT1D/
-        │   ├── FFT1D.ipynb
-        │   ├── kukei.ipynb
-        │   └── sft.ipynb
-        ├── No.3_FFT2D/
-        │   └── FFT2D.ipynb
-        ├── No.4_DFT_exercise/
-        │   └── DFT_template.ipynb
-        ├── No.5_CompressedSensing/
-        │   ├── cs_tv.ipynb
-        │   └── cs_wavelet.ipynb
-        ├── No.6_Denoising/
-        │   ├── add_noise.ipynb
-        │   └── denoise_bm3d.ipynb
-        ├── No.7_Metrics/
-        │   ├── psnr_ssim.ipynb
-        │   └── activation_functions.ipynb
-        └── No.8_CT/
-            └── ct_pipeline.ipynb
+/home/username/              <- ホームディレクトリ（~ と同じ）
+└── NMR-lab-kadai/           <- git clone で作成される
+    ├── 2026年度_B4課題引継ぎ/  <- VS Code で開くフォルダ
+    │   ├── .vscode/
+    │   │   └── settings.json  <- カーネル自動設定
+    │   ├── pyproject.toml
+    │   ├── uv.lock
+    │   ├── No.1_FID/
+    │   │   ├── makesignal.ipynb
+    │   │   └── heikatsu.ipynb
+    │   ├── No.2_FFT1D/
+    │   │   ├── FFT1D.ipynb
+    │   │   ├── kukei.ipynb
+    │   │   └── sft.ipynb
+    │   ├── No.3_FFT2D/
+    │   │   └── FFT2D.ipynb
+    │   ├── No.4_DFT_exercise/
+    │   │   └── DFT_template.ipynb
+    │   ├── No.5_CompressedSensing/
+    │   │   ├── cs_tv.ipynb
+    │   │   └── cs_wavelet.ipynb
+    │   ├── No.6_Denoising/
+    │   │   ├── add_noise.ipynb
+    │   │   └── denoise_bm3d.ipynb
+    │   ├── No.7_Metrics/
+    │   │   └── psnr_ssim.ipynb
+    │   └── No.8_CT/
+    │       └── ct_pipeline.ipynb
+    └── uv-manual/             <- セットアップマニュアル
 \end{lstlisting}
 \end{wslbox}
 

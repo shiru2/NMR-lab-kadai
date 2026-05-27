@@ -21,7 +21,7 @@ $ git clone \
 \begin{wslbox}[(3) 仮想環境の作成・パッケージのインストール]
 \begin{lstlisting}[style=bash]
 $ cd \
-  ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+  ~/NMR-lab-kadai/2026_B4_assignment
 $ uv sync
 \end{lstlisting}
 \end{wslbox}
@@ -29,13 +29,13 @@ $ uv sync
 \section{毎回の作業}
 
 \textbf{VS Code（推奨）}：VS Code で
-\cmd{2026年度\_B4課題引継ぎ} フォルダを開くと、
+\cmd{2026\_B4\_assignment} フォルダを開くと、
 カーネルが自動で \cmd{.venv} に設定されます。
 
 \begin{wslbox}[VS Code でフォルダを開く（ターミナルから）]
 \begin{lstlisting}[style=bash]
 $ code \
-  ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+  ~/NMR-lab-kadai/2026_B4_assignment
 \end{lstlisting}
 \end{wslbox}
 
@@ -44,7 +44,7 @@ $ code \
 \begin{wslbox}[JupyterLab を使う場合]
 \begin{lstlisting}[style=bash]
 $ cd \
-  ~/NMR-lab-kadai/2026年度_B4課題引継ぎ
+  ~/NMR-lab-kadai/2026_B4_assignment
 $ uv run jupyter lab
 \end{lstlisting}
 \end{wslbox}
@@ -78,7 +78,7 @@ $ uv run jupyter lab
 
 \begin{enumerate}
   \item \cmd{uv sync} を実行してパッケージが揃っているか確認する
-  \item VS Code で \cmd{2026年度\_B4課題引継ぎ} フォルダが
+  \item VS Code で \cmd{2026\_B4\_assignment} フォルダが
     開かれているか確認する（サブフォルダだけでは不十分）
   \item カーネルエラーが出たら \cmd{rm -rf .venv \&\& uv sync} を試す
   \item それでも解決しない場合は第~\ref{chap:errors}章を参照する
